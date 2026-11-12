@@ -1,0 +1,25 @@
+{
+  "name": "SAFE PROJECT – Inspeksi Lapangan K3",
+  "short_name": "SAFE PROJECT",
+  "description": "Identifikasi bahaya dan penilaian risiko K3 proyek konstruksi dengan metode HIRADC",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e7e9ec",
+  "theme_color": "#ffc800",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

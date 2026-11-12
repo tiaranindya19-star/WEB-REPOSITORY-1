@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#ffc800">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>SAFE PROJECT – Inspeksi Lapangan K3</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}[hidden]{display:none!important}
+:root{--bg:#eceef1;--sf:#fff;--ink:#14213d;--mut:#586175;--ln:#ccd1da;--hv:#ffc800;--ex:#d62828}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 Barlow,system-ui,sans-serif;padding-bottom:96px}
+h1,h2,h3{font-family:"Barlow Condensed","Arial Narrow",sans-serif;margin:0;line-height:1.1}
+.stripe{height:12px;background:repeating-linear-gradient(-45deg,var(--hv) 0 16px,#14213d 16px 32px)}
+header,main{max-width:760px;margin:0 auto;padding:12px 16px}
+h1{font-size:36px;font-weight:700}header small{color:var(--mut);font-weight:600}
+details{margin-top:8px;background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:10px 12px}summary{font-weight:600;cursor:pointer}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-top:10px}
+label{display:grid;gap:4px;font-weight:600;font-size:14px;color:var(--mut)}
+input,select,textarea,button{font:inherit;color:var(--ink)}
+input,select,textarea{width:100%;background:var(--sf);border:1.5px solid var(--ln);border-radius:8px;padding:12px;min-height:48px}
+button{min-height:48px;padding:0 16px;border:1.5px solid var(--ln);background:var(--sf);border-radius:8px;font-weight:600;cursor:pointer}
+button.pri,.fab{background:var(--hv);border-color:var(--hv)}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.chip{min-height:40px;font-size:14px}.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card{display:grid;grid-template-columns:76px 1fr;gap:12px;background:var(--sf);border:1px solid var(--ln);border-left:8px solid var(--ln);border-radius:8px;padding:10px;margin-bottom:10px;cursor:pointer}
+.card img,.np{width:76px;height:76px;object-fit:cover;border-radius:6px;background:var(--bg);display:grid;place-items:center;color:var(--mut);font-size:12px;text-align:center}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:13px}
+.late{color:var(--ex);font-weight:700}.empty{padding:28px 12px;text-align:center;color:var(--mut)}
+.ban{background:var(--ex);color:#fff;padding:12px;border-radius:8px;font-weight:600}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--sf);border-top:2px solid var(--ink);display:grid;grid-template-columns:1fr 1fr 1fr 1.3fr 1fr 1fr;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));z-index:10}
+nav button{border:0;background:none;font-size:13px;padding:0 2px}nav button.on{box-shadow:inset 0 -4px 0 var(--hv)}nav .fab{border:0}
+#fm{position:fixed;inset:0;background:rgba(10,15,30,.6);overflow:auto;z-index:20}
+.sheet{background:var(--bg);max-width:640px;margin:0 auto;min-height:100%;padding:12px 16px calc(28px + env(safe-area-inset-bottom,0px));display:grid;gap:12px;align-content:start}
+.top{display:flex;justify-content:space-between;align-items:center}
+.seg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.seg button{display:grid;place-items:center;padding:6px 2px;min-height:64px;line-height:1.1}.seg b{font:700 22px "Barlow Condensed"}.seg small{font-size:11px}.seg .on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hint{font-size:13px;color:var(--mut)}
+.rk{display:flex;gap:12px;align-items:center;padding:12px;border-radius:8px}.rk strong{font:700 44px/1 "Barlow Condensed"}
+.pv img{max-width:100%;max-height:220px;border-radius:8px;display:block;margin-top:8px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:8px 0}.kpi div{background:var(--sf);border-left:6px solid var(--hv);padding:8px 12px;font-size:13px;color:var(--mut)}.kpi strong{display:block;font:700 30px/1.1 "Barlow Condensed";color:var(--ink)}
+.mx{display:grid;grid-template-columns:30px repeat(5,1fr);gap:3px;font-size:12px;margin:8px 0}.mx i{font-style:normal;color:var(--mut);display:grid;place-items:center}.mx div{display:grid;place-items:center;min-height:44px;border-radius:3px;font-weight:700}
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:14px;margin-bottom:12px}.box h2{margin-bottom:8px}
+.stack{display:grid;gap:10px}
+#toast{position:fixed;left:16px;right:16px;bottom:100px;background:var(--ink);color:#fff;padding:12px 14px;border-radius:8px;z-index:60;max-width:700px;margin:0 auto}
+#mp{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column}#mp .mtop{padding:10px 14px;display:grid;gap:2px}#mm{flex:1;min-height:0;position:relative;z-index:0}.mbar{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));margin:0!important;grid-template-columns:1fr 1fr 1fr}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.seg3 .ons{background:#2e9e5b;color:#fff;border-color:#2e9e5b}.seg3 .ont{background:#d62828;color:#fff;border-color:#d62828}.seg3 .onn{background:var(--ink);color:#fff}.box ul{margin:4px 0 8px;padding-left:20px}.box h3{margin:12px 0 4px}
+.pin{width:26px;height:26px;background:#d62828;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 1px 4px rgba(0,0,0,.5)}#mp .mbar{grid-template-columns:1fr 1fr}.mco{display:flex;gap:8px;padding:8px 14px 0}.mco input{flex:1}
+body.fld{font-size:19px}body.fld button,body.fld input,body.fld select{min-height:58px;border-color:#555}body.fld .hint{color:#14213d}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<header>
+<h1>SAFE PROJECT</h1><small>Inspeksi lapangan K3</small>
+<button type="button" id="mf" class="chip" style="margin:8px 0 0">Mode lapangan: mati</button>
+<div class="hint" id="sst" style="margin-top:6px"></div>
+<details><summary>Data inspeksi: <span id="ps"></span></summary>
+<div class="grid"><label>Nama proyek<input id="pn"></label><label>Lokasi proyek<input id="pl"></label><label>Nama inspektur<input id="pi"></label><label>Daftar zona/area (pisahkan koma)<input id="pz" placeholder="Lantai 1, Lantai 2, Area galian"></label><label>Alamat sinkronisasi (URL Apps Script)<input id="pu" placeholder="https://script.google.com/macros/s/.../exec"></label><label>Kode proyek<input id="pk"></label></div><button type="button" id="sb" style="margin-top:10px">Sinkronkan sekarang</button></details>
+</header>
+<main>
+<section id="v-list"><div id="ban"></div><div class="chips" id="flt"></div><div id="ls"></div></section>
+<section id="v-chk" hidden></section>
+<section id="v-day" hidden></section>
+<section id="v-sum" hidden>
+<div class="kpi" id="kpi"></div>
+<div class="box"><h2>Kesimpulan dan saran (disusun otomatis)</h2><div id="nar"></div></div>
+<div class="box"><h2>Matriks risiko temuan terbuka</h2><div class="mx" id="mx"></div><div class="hint">Sel bergaris tebal berisi temuan. Angka di dalamnya adalah jumlah temuan.</div></div>
+<div class="box"><h2>Prioritas penanganan</h2><div id="top"></div></div>
+<div class="box"><h2>Analisis temuan</h2><div id="ana"></div></div>
+<div class="box"><h2>Peta sebaran temuan</h2><div class="hint">Menampilkan semua temuan yang sudah diberi titik, diwarnai menurut kategori risiko.</div><button id="bm" style="margin-top:8px">Tampilkan peta</button><div id="ov" hidden style="height:340px;margin-top:10px;position:relative;z-index:0"></div></div>
+</section>
+<section id="v-rep" hidden>
+<div class="box stack"><h2>Laporan dan berbagi</h2>
+<button class="pri" id="bp">Cetak / simpan PDF (dengan foto)</button>
+<button id="bw">Bagikan ringkasan ke WhatsApp</button>
+<button id="bl">Tagih temuan terlambat (WhatsApp)</button>
+<button id="bc">Unduh tabel temuan (CSV)</button></div>
+<div class="box stack"><h2>Cadangan data</h2>
+<div class="hint">Data tersimpan di browser perangkat ini. Cadangkan secara berkala agar tidak hilang.</div>
+<button id="bb">Unduh cadangan (JSON)</button>
+<label>Pulihkan dari cadangan<input type="file" accept=".json" id="br"></label></div>
+</section>
+</main>
+<nav>
+<button data-t="list" class="on">Temuan</button><button data-t="chk">Checklist</button><button data-t="day">Harian</button><button class="fab" id="add">+ Temuan</button><button data-t="sum">Ringkasan</button><button data-t="rep">Laporan</button>
+</nav>
+<div id="fm" hidden></div>
+<div id="mp" hidden></div>
+<div id="toast" hidden></div>
+<script>
+const JOBS={
+"Pekerjaan galian dan tanah":[
+["Longsor dinding galian","Pekerja tertimbun, cedera berat atau fatal","Pasang turap atau shoring, buat kemiringan lereng aman, jauhkan beban dari tepi galian.",3,5],
+["Tertabrak alat berat","Patah tulang, luka berat","Sediakan pemandu lalu lintas, jalur alat dan pekerja terpisah, alarm mundur.",3,4],
+["Terjatuh ke dalam galian","Patah tulang, cedera kepala","Pasang pagar pengaman, rambu, dan penerangan di sekitar galian.",3,3],
+["Paparan debu","Gangguan pernapasan","Siram permukaan tanah secara rutin dan wajibkan masker.",4,2]],
+"Pekerjaan bekisting dan pembesian":[
+["Tertusuk atau tergores besi tulangan","Luka tusuk, infeksi","Pasang penutup ujung besi, wajibkan sarung tangan dan sepatu safety.",4,2],
+["Bekisting atau perancah runtuh","Tertimpa material, cedera berat","Pasang perancah sesuai gambar desain dan lakukan inspeksi sebelum pengecoran.",2,5],
+["Cedera punggung saat mengangkat material","Gangguan otot dan tulang","Gunakan alat bantu angkat dan ajarkan teknik angkat yang benar.",4,2],
+["Terpotong gerinda atau gergaji","Luka sayat, amputasi","Pasang pelindung mata pisau, wajibkan sarung tangan dan kacamata pelindung.",3,4]],
+"Pekerjaan pengecoran beton":[
+["Pipa concrete pump terlepas atau pecah","Terpukul material beton, cedera berat","Periksa sambungan pipa sebelum pengecoran dan tetapkan zona aman.",2,4],
+["Iritasi kulit akibat semen","Dermatitis, luka bakar kimia","Wajibkan sarung tangan karet, sepatu bot, dan sediakan air bilas.",4,2],
+["Tertabrak truk mixer","Cedera berat atau fatal","Atur rute dan pemandu truk, pasang batas kecepatan di area proyek.",3,5],
+["Kebisingan vibrator","Gangguan pendengaran","Sediakan ear plug dan batasi durasi paparan.",4,2]],
+"Pekerjaan di ketinggian":[
+["Jatuh dari ketinggian","Cedera berat atau fatal","Gunakan full body harness, guardrail, dan jaring pengaman; terbitkan izin kerja ketinggian.",4,5],
+["Material jatuh","Pekerja di bawah tertimpa","Pasang toe board dan barikade area bawah, wajibkan helm.",3,4],
+["Perancah roboh","Banyak pekerja terjatuh","Gunakan perancah bersertifikat dan inspeksi harian.",2,5],
+["Angin kencang dan petir","Kehilangan keseimbangan, sambaran","Hentikan pekerjaan saat cuaca buruk dan pasang penangkal petir.",2,4]],
+"Pekerjaan pengelasan":[
+["Percikan api dan kebakaran","Luka bakar, kebakaran area kerja","Sediakan APAR dan fire blanket, singkirkan bahan mudah terbakar.",3,4],
+["Radiasi dan silau las","Kerusakan mata","Wajibkan kap las dan pasang tirai pelindung.",4,3],
+["Asap las","Gangguan pernapasan","Sediakan ventilasi dan respirator.",4,3],
+["Sengatan listrik mesin las","Luka bakar listrik, henti jantung","Periksa kabel dan grounding sebelum pemakaian.",2,5]],
+"Pekerjaan pengangkatan (crane)":[
+["Beban jatuh","Tertimpa beban, fatal","Periksa sling dan shackle, tetapkan zona aman, jangan lewatkan beban di atas pekerja.",3,5],
+["Crane terguling","Kerusakan alat, korban jiwa","Pastikan tanah stabil, pasang outrigger penuh, patuhi kapasitas angkat.",2,5],
+["Terjepit atau tertabrak beban ayun","Cedera berat","Gunakan tali pengarah dan tetapkan sinyal komunikasi rigger.",3,4],
+["Sling atau kabel putus","Beban jatuh mendadak","Inspeksi sling secara berkala dan ganti sesuai batas pakai.",2,5]],
+"Pekerjaan pondasi tiang pancang":[
+["Tiang pancang roboh atau terjatuh","Tertimpa, cedera berat","Gunakan sling dan alat bantu angkat sesuai kapasitas, tetapkan zona aman radius alat.",2,5],
+["Kebisingan dan getaran hammer","Gangguan pendengaran","Sediakan ear muff dan batasi durasi kerja.",5,2],
+["Tangan terjepit saat penyambungan tiang","Patah jari, amputasi","Gunakan alat bantu penjepit dan komunikasi sinyal operator.",3,4],
+["Alat pancang terguling","Korban jiwa, kerusakan alat","Padatkan dan ratakan landasan, periksa kemiringan menara.",2,5]],
+"Pekerjaan pasangan dan plesteran":[
+["Jatuh dari perancah","Cedera berat","Gunakan perancah berpagar, lantai kerja rata, dan harness.",3,4],
+["Iritasi kulit dan mata akibat mortar","Dermatitis, iritasi mata","Wajibkan sarung tangan karet dan kacamata pelindung.",4,2],
+["Dinding pasangan roboh","Tertimpa material","Pasang pengaku sementara dan batasi tinggi pasangan harian.",2,4],
+["Terpukul atau tersandung material","Memar, terkilir","Rapikan area kerja dan sediakan tempat penyimpanan material.",4,2]],
+"Pekerjaan pembongkaran":[
+["Struktur runtuh tak terkendali","Korban jiwa","Susun urutan bongkar oleh ahli, tambahkan penopang sementara.",3,5],
+["Debu dan serat berbahaya","Gangguan pernapasan","Basahi permukaan, wajibkan respirator, periksa kandungan asbes.",4,3],
+["Puing jatuh","Tertimpa, cedera kepala","Pasang jaring dan barikade, jaga zona aman di bawah.",4,4],
+["Terpotong alat bongkar","Luka sayat, amputasi","Gunakan alat sesuai fungsi dan APD lengkap.",3,4]],
+"Pekerjaan instalasi listrik":[
+["Sengatan listrik","Henti jantung, luka bakar","Terapkan lock-out tag-out, gunakan alat berisolasi, pastikan grounding.",3,5],
+["Korsleting dan kebakaran","Kerusakan dan luka bakar","Gunakan kabel dan MCB sesuai kapasitas, sediakan APAR.",3,4],
+["Tersandung kabel","Terkilir, patah tulang","Rapikan dan lindungi jalur kabel.",4,2]]};
+const L_T=[["Sangat jarang","Hampir tidak pernah terjadi"],["Jarang","Mungkin sekali selama proyek"],["Mungkin","Bisa terjadi sesekali; ada kondisi tidak aman"],["Sering","Terjadi berulang pada pekerjaan ini"],["Hampir pasti","Kondisi tidak aman terlihat sekarang dan berlangsung"]];
+const S_T=[["Tidak signifikan","Tanpa cedera, kerugian kecil"],["Ringan","Cukup P3K, tidak kehilangan hari kerja"],["Sedang","Perlu perawatan medis, kehilangan hari kerja"],["Berat","Cacat permanen atau rawat inap, kerusakan besar"],["Fatal","Meninggal atau banyak korban"]];
+const CATS=[{n:"Rendah",c:"#2e9e5b",d:30,g:"Pantau rutin. Batas penanganan 30 hari."},{n:"Sedang",c:"#f2c230",d:7,g:"Tangani dalam 1 minggu. Pasang rambu dan wajibkan APD."},{n:"Tinggi",c:"#f08a24",d:3,g:"Tangani maksimal 3 hari. Wajib pengendalian teknis dan pengawasan ketat."},{n:"Ekstrem",c:"#d62828",d:0,g:"HENTIKAN PEKERJAAN di area ini sampai risiko diturunkan."}];
+const ST=["Terbuka","Dikerjakan","Selesai"];
+const $=i=>document.getElementById(i),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cat=s=>s<=4?0:s<=9?1:s<=14?2:3,sc=x=>x.l*x.s;
+const bg=c=>`background:${c.c};color:${c.n==="Sedang"||c.n==="Tinggi"?"#14213d":"#fff"}`;
+const tg=x=>{const c=CATS[cat(sc(x))];return `<span class="tag" style="${bg(c)}">${c.n} ${sc(x)}</span>`;};
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);};
+const late=x=>x.st!=="Selesai"&&x.due&&x.due<addDays(0);
+let D={p:{n:"",l:"",i:""},items:[]},cur=null,flt="all";
+function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3500);}
+function save(){try{localStorage.setItem("sp2",JSON.stringify(D));}catch(e){toast("Penyimpanan penuh. Unduh cadangan lalu hapus foto lama.");}}
+function dl(name,data,type){const u=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);}
+function shrink(file,label){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.drawImage(im,0,0,c.width,c.height);x.fillStyle="rgba(0,0,0,.6)";x.fillRect(0,c.height-26,c.width,26);x.fillStyle="#fff";x.font="14px sans-serif";x.fillText(new Date().toLocaleString("id-ID")+(label?" | "+label:""),8,c.height-8,c.width-16);res(c.toDataURL("image/jpeg",.65));};im.src=r.result;};r.readAsDataURL(file);});}
+
+function render(){list();summ();ana();$("ps").textContent=D.p.n||"belum diisi";}
+function list(){
+const op=D.items.filter(x=>x.st!=="Selesai"),ex=op.filter(x=>cat(sc(x))===3).length;
+$("ban").innerHTML=ex?`<div class="ban">PERINGATAN: ${ex} temuan risiko Ekstrem masih terbuka. Hentikan pekerjaan di area terkait.</div>`:"";
+const F=[["all","Semua"],["Terbuka","Terbuka"],["Dikerjakan","Dikerjakan"],["Selesai","Selesai"],["late","Terlambat"]];
+const m=k=>x=>k==="all"||(k==="late"?late(x):x.st===k);
+$("flt").innerHTML=F.map(f=>`<button class="chip${flt===f[0]?" on":""}" data-f="${f[0]}">${f[1]} (${D.items.filter(m(f[0])).length})</button>`).join("");
+$("flt").querySelectorAll("button").forEach(b=>b.onclick=()=>{flt=b.dataset.f;list();});
+const a=D.items.filter(m(flt)).sort((p,q)=>(p.st==="Selesai")-(q.st==="Selesai")||sc(q)-sc(p));
+$("ls").innerHTML=a.length?a.map(x=>`<div class="card" data-id="${x.id}" style="border-left-color:${CATS[cat(sc(x))].c}">${x.ph||x.phu?`<img src="${x.ph||x.phu}" alt="">`:`<div class="np">Tanpa foto</div>`}<div><b>${esc(x.h)}</b><br>${tg(x)} <small>${x.st}</small><br><small>${esc((x.z?x.z+" · ":"")+(x.loc||"Lokasi belum diisi"))}${x.gps?" · ada titik peta":""}${x.by&&x.by!==D.p.i?" · oleh "+esc(x.by):""}</small><br><small class="${late(x)?"late":""}">Batas: ${x.due||"-"}${late(x)?" (terlambat)":""}</small></div></div>`).join(""):`<div class="empty">Belum ada temuan. Ketuk <b>+ Temuan</b> untuk mencatat bahaya pertama.</div>`;
+$("ls").querySelectorAll(".card").forEach(c=>c.onclick=()=>openForm(+c.dataset.id));}
+function summ(){
+const op=D.items.filter(x=>x.st!=="Selesai"),n=D.items.length;
+$("kpi").innerHTML=[["Total temuan",n],["Masih terbuka",op.length],["Terlambat",D.items.filter(late).length],["Tinggi/Ekstrem terbuka",op.filter(x=>cat(sc(x))>=2).length],["Selesai",n?Math.round((n-op.length)/n*100)+"%":"0%"]].map(k=>`<div><strong>${k[1]}</strong>${k[0]}</div>`).join("");
+let m="<i></i>"+[1,2,3,4,5].map(l=>`<i>L${l}</i>`).join("");
+for(let s=5;s>=1;s--){m+=`<i>S${s}</i>`;for(let l=1;l<=5;l++){const k=op.filter(x=>x.l===l&&x.s===s).length;m+=`<div style="background:${CATS[cat(l*s)].c};${k?"outline:3px solid #14213d;color:#14213d":"opacity:.5"}">${k||l*s}</div>`;}}
+$("mx").innerHTML=m;
+const top=op.slice().sort((a,b)=>sc(b)-sc(a)||(a.due||"9").localeCompare(b.due||"9")).slice(0,5);
+$("top").innerHTML=top.length?top.map((x,i)=>`<p style="margin:0 0 10px"><b>${i+1}. ${esc(x.h)}</b> ${tg(x)}<br><small>${esc(x.loc||"-")} · PIC: ${esc(x.pic||"belum ditentukan")} · batas ${x.due||"-"}</small></p>`).join(""):"Tidak ada temuan terbuka.";}
+
+function openForm(id){
+const it=id&&D.items.find(x=>x.id===id);
+cur=it?JSON.parse(JSON.stringify(it)):{id:Date.now(),t:new Date().toISOString(),job:Object.keys(JOBS)[0],h:"",c:"",k:"",loc:"",gps:null,l:3,s:3,pic:"",due:addDays(7),st:"Terbuka",ph:"",pa:"",auto:true,z:"",jt:"Kondisi tidak aman",py:"Manusia",lr:0,sr:0};
+$("fm").innerHTML=`<div class="sheet"><div class="top"><h2>${it?"Ubah temuan":"Temuan baru"}</h2><button id="x">Tutup</button></div>
+<label>Jenis pekerjaan<select id="fj">${Object.keys(JOBS).map(j=>`<option${j===cur.job?" selected":""}>${j}</option>`).join("")}<option value="__x"${JOBS[cur.job]?"":" selected"}>Lainnya (ketik sendiri)</option></select></label>
+<label id="fjx"${JOBS[cur.job]?" hidden":""}>Nama pekerjaan<input id="fjn" value="${JOBS[cur.job]?"":esc(cur.job)}" placeholder="Contoh: Pekerjaan waterproofing atap"></label>
+<div class="hint">Ketuk bahaya umum untuk mengisi otomatis, atau ketik sendiri.</div><div class="chips" id="fh"></div>
+<label>Bahaya / temuan<input id="ft" value="${esc(cur.h)}" placeholder="Contoh: Pekerja tanpa harness di lantai 4"></label>
+<div><label class="btn">Foto temuan (kamera)<input type="file" accept="image/*" capture="environment" id="fp"></label><div class="pv" id="pv"></div></div>
+<label>Lokasi (area, lantai, as)<input id="fl" value="${esc(cur.loc)}" placeholder="Contoh: Lantai 3, as C-4"></label>
+<div class="grid"><label>Zona / area proyek<select id="fz">${zopt(cur.z)}</select></label><label>Jenis temuan<select id="fjt">${so(JT,cur.jt||JT[0])}</select></label><label>Penyebab utama<select id="fpy">${so(PY,cur.py||PY[0])}</select></label></div>
+<div class="stack"><button type="button" id="gps">Tandai titik di peta (opsional)</button><div class="hint" id="gs">${cur.gps?gt(cur.gps):"Belum ada titik."}</div></div>
+
+<h3>Seberapa mungkin terjadi?</h3><div class="seg" id="sl"></div><div class="hint" id="hl"></div>
+<h3>Seberapa parah dampaknya?</h3><div class="seg" id="ss"></div><div class="hint" id="hs"></div>
+<div class="rk" id="rk"></div>
+<label>Tindakan pengendalian<textarea id="fk" rows="3">${esc(cur.k)}</textarea></label><button type="button" id="mic">Isi dengan suara</button>
+<div class="grid"><label>Penanggung jawab (PIC)<input id="fpic" value="${esc(cur.pic)}"></label><label>Batas waktu penanganan<input type="date" id="fd" value="${cur.due}"></label><label>Status<select id="fst">${ST.map(s=>`<option${s===cur.st?" selected":""}>${s}</option>`).join("")}</select></label></div>
+<div class="grid"><label>Risiko sisa: kemungkinan (L)<select id="flr">${sel0(cur.lr)}</select></label><label>Risiko sisa: keparahan (S)<select id="fsr">${sel0(cur.sr)}</select></label></div><div class="hint">Isi setelah pengendalian dilakukan, untuk mengukur penurunan risiko.</div>
+<div><label class="btn">Foto sesudah perbaikan (bukti)<input type="file" accept="image/*" capture="environment" id="fa"></label><div class="pv" id="pq"></div></div>
+<button type="button" id="wt">Kirim tugas ke PIC (WhatsApp)</button>
+<div class="grid"><button class="pri" id="sv">Simpan temuan</button>${it?`<button id="dl">Hapus temuan</button>`:""}</div></div>`;
+$("fm").hidden=false;document.body.style.overflow="hidden";$("fm").scrollTop=0;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR)$("mic").hidden=true;
+$("x").onclick=closeForm;
+$("gps").onclick=pickMap;
+$("wt").onclick=()=>shr(tugas({...cur,h:$("ft").value.trim()||cur.h,loc:$("fl").value,k:$("fk").value,pic:$("fpic").value,due:$("fd").value,z:$("fz").value}));
+$("fj").onchange=()=>{const x=$("fj").value==="__x";$("fjx").hidden=!x;cur.job=x?($("fjn").value.trim()||"Pekerjaan lainnya"):$("fj").value;hz();};
+$("fjn").oninput=()=>{cur.job=$("fjn").value.trim()||"Pekerjaan lainnya";};
+$("fd").onchange=()=>{cur.due=$("fd").value;cur.auto=false;};
+$("fst").onchange=()=>{if($("fst").value==="Selesai"&&!cur.pa)toast("Lampirkan foto sesudah perbaikan sebagai bukti.");};
+$("fp").onchange=async e=>{const f=e.target.files[0];if(f){cur.ph=await shrink(f,$("fl").value);pv();}};
+$("fa").onchange=async e=>{const f=e.target.files[0];if(f){cur.pa=await shrink(f,"Sesudah | "+$("fl").value);pv();}};
+if(SR)$("mic").onclick=()=>{const r=new SR();r.lang="id-ID";r.onresult=e=>{const t=$("fk");t.value+=(t.value?" ":"")+e.results[0][0].transcript;};r.onerror=()=>toast("Suara tidak terbaca. Coba lagi.");r.start();};
+$("sv").onclick=()=>{cur.h=$("ft").value.trim();if(!cur.h){toast("Isi nama bahaya atau temuan dulu.");return;}
+cur.loc=$("fl").value.trim();cur.k=$("fk").value.trim();cur.pic=$("fpic").value.trim();cur.st=$("fst").value;cur.u=Date.now();cur.by=D.p.i||"";cur.due=$("fd").value;cur.z=$("fz").value;cur.jt=$("fjt").value;cur.py=$("fpy").value;cur.lr=+$("flr").value;cur.sr=+$("fsr").value;
+const i=D.items.findIndex(x=>x.id===cur.id);if(i>=0)D.items[i]=cur;else D.items.push(cur);
+save();closeForm();sync();toast(cat(sc(cur))===3&&cur.st!=="Selesai"?"RISIKO EKSTREM: hentikan pekerjaan di area ini.":"Temuan disimpan.");};
+if(it)$("dl").onclick=()=>{if(confirm("Hapus temuan ini?")){D.items=D.items.filter(x=>x.id!==cur.id);(D.dq=D.dq||[]).push(cur.id);save();closeForm();sync();}};
+hz();pv();rf();}
+const gt=g=>`${g.a}, ${g.o}`+(g.r?` (±${g.r} m)`:"");
+const TL=[{n:"Peta jalan",u:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",o:{maxZoom:20,maxNativeZoom:19,attribution:"Tiles © Esri"}},
+{n:"Satelit",u:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",o:{maxZoom:20,maxNativeZoom:18,attribution:"Tiles © Esri"}},
+{n:"OpenStreetMap",u:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",o:{maxZoom:19,attribution:"© OpenStreetMap"}}];
+const GE={1:"Izin lokasi ditolak. Izinkan lokasi pada pengaturan situs di browser.",2:"Posisi tidak tersedia. Aktifkan GPS atau layanan lokasi perangkat.",3:"Waktu habis. Coba lagi di tempat terbuka."};
+function leaflet(){return new Promise((ok,no)=>{if(window.L)return ok();const c=document.createElement("link");c.rel="stylesheet";c.href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";document.head.appendChild(c);const j=document.createElement("script");j.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";j.onload=ok;j.onerror=no;document.head.appendChild(j);setTimeout(()=>window.L||no(),15000);});}
+function mkMap(el,c,z){
+const m=L.map(el).setView(c,z),ls=TL.map(t=>L.tileLayer(t.u,t.o));let bad=0;
+ls[0].addTo(m);L.control.layers(Object.fromEntries(TL.map((t,k)=>[t.n,ls[k]]))).addTo(m);
+ls.forEach((l,k)=>l.on("tileerror",()=>{if(m.hasLayer(l)&&++bad===6){bad=0;if(k<ls.length-1){m.removeLayer(l);ls[k+1].addTo(m);toast("Layer peta gagal, otomatis pindah ke "+TL[k+1].n+". Bisa dipilih manual di pojok kanan atas.");}else toast("Peta tidak bisa dimuat. Tempel koordinat atau tulis lokasi pada kolom Lokasi.");}}));
+return m;}
+const pinIcon=()=>L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[26,26],iconAnchor:[13,26]});
+const parseC=t=>{const m=String(t).match(/(-?\d{1,3}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)/);if(!m)return null;const a=+m[1],o=+m[2];return Math.abs(a)<=90&&Math.abs(o)<=180?{a,o}:null;};
+let map=null,pin=null,pick=null,acc=null,om=null;
+async function pickMap(){
+const mp=$("mp");mp.hidden=false;
+mp.innerHTML=`<div class="mtop"><b>Ketuk peta untuk menaruh pin lokasi</b><span class="hint" id="mc">Memuat peta...</span></div><div id="mm"></div><div class="mco"><input id="mi" placeholder="Atau tempel koordinat / tautan Google Maps"><button type="button" id="mu">Pakai</button></div><div class="grid mbar"><button type="button" id="mh">Ke posisi saya</button><button type="button" id="md">Hapus titik</button><button type="button" id="mq">Batal</button><button type="button" class="pri" id="ms">Simpan lokasi</button></div>`;
+if(map){map.remove();map=null;}pick=cur.gps?{a:cur.gps.a,o:cur.gps.o}:null;pin=null;acc=null;
+const put=(a,o)=>{pick={a:+a.toFixed(6),o:+o.toFixed(6)};if(map){if(pin)pin.setLatLng([a,o]);else{pin=L.marker([a,o],{draggable:true,icon:pinIcon()}).addTo(map);pin.on("dragend",()=>{const p=pin.getLatLng();put(p.lat,p.lng);});}}$("mc").textContent=`Pin: ${pick.a}, ${pick.o}`;};
+$("mq").onclick=()=>{mp.hidden=true;};
+$("ms").onclick=()=>{if(!pick){toast("Ketuk peta atau tempel koordinat dulu.");return;}cur.gps={a:pick.a,o:pick.o,r:0};$("gs").textContent=gt(cur.gps);mp.hidden=true;};
+$("md").onclick=()=>{cur.gps=null;$("gs").textContent="Belum ada titik.";mp.hidden=true;};
+$("mu").onclick=()=>{const c=parseC($("mi").value);if(!c){toast("Koordinat tidak terbaca. Contoh: -7.5, 110.2");return;}put(c.a,c.o);if(map)map.setView([c.a,c.o],18);};
+let ok=true;try{await leaflet();}catch(e){ok=false;}
+if(!ok){$("mm").innerHTML='<div class="empty">Peta tidak bisa dimuat (butuh internet). Tempel koordinat di kolom bawah, atau tutup dan tulis lokasi pada kolom Lokasi.</div>';$("mc").textContent="Peta tidak tersedia.";return;}
+const last=cur.gps||(D.items.slice().reverse().find(x=>x.gps)||{}).gps;
+map=mkMap("mm",last?[last.a,last.o]:[-7.5,110.2],last?18:6);
+map.on("click",e=>put(e.latlng.lat,e.latlng.lng));
+if(cur.gps)put(cur.gps.a,cur.gps.o);else $("mc").textContent="Belum ada pin. Pin bisa digeser setelah ditaruh.";
+setTimeout(()=>map.invalidateSize(),150);
+$("mh").onclick=()=>{if(!navigator.geolocation){toast("Perangkat tidak mendukung lokasi.");return;}$("mc").textContent="Mencari posisi...";
+navigator.geolocation.getCurrentPosition(p=>{const a=p.coords.latitude,o=p.coords.longitude;map.setView([a,o],19);if(acc)map.removeLayer(acc);acc=L.circle([a,o],{radius:p.coords.accuracy,color:"#1d6ff2",weight:1}).addTo(map);$("mc").textContent=`Posisimu ±${Math.round(p.coords.accuracy)} m. Ketuk peta untuk menaruh pin.`;},e=>{toast(GE[e.code]||"Gagal mengambil posisi.");$("mc").textContent="Ketuk peta untuk menaruh pin.";},{enableHighAccuracy:true,timeout:20000,maximumAge:0});};}
+async function ovMap(){
+const pts=D.items.filter(x=>x.gps);if(!pts.length){toast("Belum ada temuan yang diberi titik peta.");return;}
+try{await leaflet();}catch(e){toast("Peta butuh internet.");return;}
+$("ov").hidden=false;if(om){om.remove();om=null;}
+om=mkMap("ov",[pts[0].gps.a,pts[0].gps.o],17);
+pts.forEach(x=>{const c=CATS[cat(sc(x))];L.circleMarker([x.gps.a,x.gps.o],{radius:10,color:"#fff",weight:2,fillColor:c.c,fillOpacity:1}).addTo(om).bindPopup(`<b>${esc(x.h)}</b><br>${c.n} (${sc(x)}) · ${x.st}<br>${esc((x.z||"")+" "+(x.loc||""))}<br><a target="_blank" href="https://www.google.com/maps?q=${x.gps.a},${x.gps.o}">Buka di Google Maps</a>`);});
+om.fitBounds(pts.map(x=>[x.gps.a,x.gps.o]),{padding:[30,30],maxZoom:18});
+setTimeout(()=>om.invalidateSize(),150);}
+function closeForm(){$("fm").hidden=true;document.body.style.overflow="";render();}
+function hz(){$("fh").innerHTML=(JOBS[cur.job]||[]).map((h,i)=>`<button type="button" class="chip" data-i="${i}">${esc(h[0])}</button>`).join("");
+$("fh").querySelectorAll("button").forEach(b=>b.onclick=()=>{const h=JOBS[cur.job][+b.dataset.i];cur.h=h[0];cur.c=h[1];cur.k=h[2];cur.l=h[3];cur.s=h[4];$("ft").value=cur.h;$("fk").value=cur.k;if(cur.auto){cur.due=addDays(CATS[cat(sc(cur))].d);$("fd").value=cur.due;}rf();});}
+function pv(){$("pv").innerHTML=(cur.ph||cur.phu)?`<img src="${cur.ph||cur.phu}" alt="Foto temuan">`:"";$("pq").innerHTML=(cur.pa||cur.pau)?`<img src="${cur.pa||cur.pau}" alt="Foto sesudah">`:"";}
+function seg(id,T,key){$(id).innerHTML=T.map((t,i)=>`<button type="button" class="${cur[key]===i+1?"on":""}" data-v="${i+1}"><b>${i+1}</b><small>${t[0]}</small></button>`).join("");
+$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{cur[key]=+b.dataset.v;if(cur.auto){cur.due=addDays(CATS[cat(sc(cur))].d);$("fd").value=cur.due;}rf();});}
+function rf(){seg("sl",L_T,"l");seg("ss",S_T,"s");$("hl").textContent=L_T[cur.l-1][1];$("hs").textContent=S_T[cur.s-1][1];const c=CATS[cat(sc(cur))];$("rk").style.cssText=bg(c);$("rk").innerHTML=`<strong>${sc(cur)}</strong><div><b>${c.n}</b><br>${c.g}</div>`;}
+
+const JT=["Kondisi tidak aman","Tindakan tidak aman","Nyaris celaka","Kecelakaan kerja"],PY=["Manusia","Metode kerja","Peralatan","Material","Lingkungan","Manajemen"];
+const so=(a,v)=>a.map(x=>`<option${x===v?" selected":""}>${x}</option>`).join(""),sel0=v=>`<option value="0">-</option>`+[1,2,3,4,5].map(i=>`<option${i===v?" selected":""}>${i}</option>`).join("");
+const zl=()=>(D.p.z||"Zona A, Zona B, Zona C").split(",").map(t=>t.trim()).filter(Boolean),zopt=v=>`<option value="">- pilih -</option>`+zl().map(z=>`<option${z===v?" selected":""}>${esc(z)}</option>`).join("");
+const cnt=(a,f)=>{const m={};a.forEach(x=>{const k=f(x)||"Belum diisi";m[k]=(m[k]||0)+1;});return Object.entries(m).sort((p,q)=>q[1]-p[1]);};
+const bars=(e,c)=>{const mx=Math.max(1,...e.map(x=>x[1]));return e.map(x=>`<div style="display:grid;grid-template-columns:130px 1fr 30px;gap:8px;align-items:center;font-size:13px;margin:4px 0"><span>${esc(x[0])}</span><i style="display:block;height:12px;border-radius:3px;background:${c};width:${x[1]/mx*100}%"></i><b>${x[1]}</b></div>`).join("")||`<div class="hint">Belum ada data.</div>`;};
+function nar(){
+const it=D.items,n=it.length;
+if(!n){$("nar").innerHTML="<p>Belum ada data. Isi checklist atau tambah temuan, lalu kesimpulan dan saran tersusun otomatis di sini.</p>";return;}
+const op=it.filter(x=>x.st!=="Selesai"),ex=op.filter(x=>cat(sc(x))===3),hi=op.filter(x=>cat(sc(x))===2),lt=it.filter(late);
+const t1=cnt(it,x=>x.job)[0],t2=cnt(it,x=>x.h)[0],t3=cnt(it,x=>x.z).filter(x=>x[0]!=="Belum diisi")[0],t4=cnt(it,x=>x.py)[0];
+const done=n-op.length,av=Math.round(it.reduce((a,x)=>a+sc(x),0)/n*10)/10,rr=it.filter(x=>x.lr&&x.sr);
+const red=rr.length?Math.round((1-rr.reduce((a,x)=>a+x.lr*x.sr,0)/rr.reduce((a,x)=>a+sc(x),0))*100):null;
+const k=[`Tercatat ${n} temuan dengan rata-rata skor risiko ${av}. Sebanyak ${op.length} temuan masih terbuka dan ${done} sudah selesai (${Math.round(done/n*100)}%).`];
+k.push(ex.length?`Ada ${ex.length} temuan risiko Ekstrem yang masih terbuka (${[...new Set(ex.map(x=>x.h))].slice(0,3).join("; ")}). Pekerjaan di area terkait harus dihentikan sampai risiko diturunkan.`:hi.length?`Tidak ada temuan Ekstrem yang terbuka, tetapi ada ${hi.length} temuan risiko Tinggi yang harus ditangani maksimal 3 hari.`:"Tidak ada temuan risiko Tinggi atau Ekstrem yang masih terbuka.");
+k.push(`Pekerjaan dengan temuan terbanyak adalah ${t1[0].replace("Pekerjaan ","")} (${t1[1]} temuan). Bahaya yang paling sering muncul adalah ${t2[0]} (${t2[1]} kali)${t3?`, dan zona dengan temuan terbanyak adalah ${t3[0]} (${t3[1]} temuan)`:""}. Penyebab dominan berasal dari faktor ${t4[0].toLowerCase()}.`);
+if(lt.length)k.push(`${lt.length} temuan melewati batas waktu penanganan.`);
+if(red!==null)k.push(`Dari temuan yang sudah dinilai ulang, pengendalian menurunkan skor risiko sekitar ${red}%.`);
+const rc=[];if(ex.length)rc.push("hentikan pekerjaan pada area risiko Ekstrem dan tetapkan pengendalian eliminasi atau rekayasa teknik sebelum dilanjutkan");
+if(t2[1]>1)rc.push(`adakan pengarahan (toolbox meeting) tentang ${t2[0].toLowerCase()} karena bahaya ini berulang`);
+if(lt.length)rc.push("tagih penyelesaian temuan terlambat kepada penanggung jawabnya");
+rc.push("lakukan inspeksi ulang di area yang sama untuk memastikan temuan yang sudah selesai tidak muncul kembali");
+const A=D.apd||[],ao=A.reduce((a,x)=>a+x.o,0),ak=A.reduce((a,x)=>a+x.k,0),tb=(D.logs||[]).filter(x=>x.tp),cz=zl().filter(z=>cov(z)>7);
+if(ao)k.push(`Kepatuhan APD dari ${ao} pengamatan pekerja adalah ${Math.round(ak/ao*100)}%.`);
+if(tb.length)k.push(`Toolbox meeting tercatat ${tb.length} kali.`);
+if(cz.length)k.push(`Zona yang lebih dari 7 hari belum diinspeksi: ${cz.join(", ")}.`);
+if(ao&&ak/ao<.9)rc.push("tingkatkan pembinaan dan pengawasan pemakaian APD karena kepatuhan belum mencapai 90%");
+if(cz.length)rc.push("jadwalkan inspeksi pada zona yang lama tidak dikunjungi");
+$("nar").innerHTML=`<h3>Kesimpulan</h3><ul>${k.map(t=>`<li>${esc(t)}</li>`).join("")}</ul><h3>Saran</h3><p>${esc("Disarankan untuk "+rc.join(", ")+".")}</p>`;}
+function ana(){
+nar();const it=D.items,S=(D.sess||[]).slice(-6).reverse();
+$("ana").innerHTML=`<h3>Bahaya paling sering (Pareto)</h3>${bars(cnt(it,x=>x.h).slice(0,6),"#14213d")}<h3>Per jenis pekerjaan</h3>${bars(cnt(it,x=>x.job.replace("Pekerjaan ","")),"#f08a24")}<h3>Per zona</h3>${bars(cnt(it,x=>x.z),"#2e9e5b")}<h3>Jenis temuan</h3>${bars(cnt(it,x=>x.jt),"#d62828")}<h3>Penyebab utama</h3>${bars(cnt(it,x=>x.py),"#7a5af8")}<h3>Kepatuhan checklist terakhir (%)</h3>${bars(S.map(s=>[new Date(s.t).toLocaleDateString("id-ID")+" "+s.job.replace("Pekerjaan ","")+(s.z?" ("+s.z+")":""),s.tot?Math.round(s.ok/s.tot*100):0]),"#2e9e5b")}`;}
+let CK={job:"",z:"",r:{}};
+function chk(){
+const J=Object.keys(JOBS),job=CK.job||J[0],H=JOBS[job],v=$("v-chk");
+v.innerHTML=`<div class="box stack"><h2>Checklist inspeksi</h2><div class="hint">Telusuri satu per satu agar tidak ada bahaya terlewat. Item yang Tidak sesuai otomatis menjadi temuan, lengkapi foto dan lokasinya di daftar temuan.</div><label>Jenis pekerjaan<select id="cj">${J.map(j=>`<option${j===job?" selected":""}>${j}</option>`).join("")}</select></label><label>Zona / area<select id="cz">${zopt(CK.z)}</select></label></div>`+H.map((h,i)=>`<div class="box"><b>${esc(h[0])}</b><div class="hint">Pastikan: ${esc(h[2])}</div><div class="seg3" data-i="${i}">${[["s","Sesuai"],["t","Tidak sesuai"],["n","T/A"]].map(b=>`<button type="button" data-v="${b[0]}" class="${CK.r[i]===b[0]?"on"+b[0]:""}">${b[1]}</button>`).join("")}</div></div>`).join("")+`<div class="box stack"><button class="pri" id="ckb">Selesai: buat temuan dari item tidak sesuai</button></div>`;
+$("cj").onchange=()=>{CK.job=$("cj").value;CK.r={};chk();};
+$("cz").onchange=()=>{CK.z=$("cz").value;};
+v.querySelectorAll(".seg3").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{CK.r[g.dataset.i]=b.dataset.v;chk();}));
+$("ckb").onclick=()=>{const ks=Object.keys(CK.r);if(!ks.length){toast("Isi minimal satu item.");return;}
+const ok=ks.filter(i=>CK.r[i]==="s").length,bad=ks.filter(i=>CK.r[i]==="t");
+bad.forEach(i=>{const h=H[+i];D.items.push({id:Date.now()+(+i),t:new Date().toISOString(),job,h:h[0],c:h[1],k:h[2],loc:"",z:CK.z,gps:null,l:h[3],s:h[4],pic:"",due:addDays(CATS[cat(h[3]*h[4])].d),st:"Terbuka",ph:"",pa:"",auto:true,jt:"Kondisi tidak aman",py:"Manusia",lr:0,sr:0,u:Date.now(),by:D.p.i||""});});
+(D.sess=D.sess||[]).push({t:new Date().toISOString(),job,z:CK.z,ok,tot:ok+bad.length});
+save();CK.r={};render();chk();sync();toast(bad.length?`${bad.length} temuan dibuat dari checklist.`:"Semua item sesuai. Checklist tersimpan.");};}
+const APDL=["Helm safety","Rompi reflektif","Sepatu safety","Sarung tangan","Kacamata pelindung","Full body harness","Masker / respirator","Ear plug / ear muff"];
+const shr=t=>navigator.share?navigator.share({text:t}).catch(()=>{}):window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank");
+const tugas=x=>`*Tugas perbaikan K3*\nProyek: ${D.p.n||"-"}\nTemuan: ${x.h}\nRisiko: ${CATS[cat(sc(x))].n} (${sc(x)})\nLokasi: ${(x.z?x.z+" - ":"")+(x.loc||"-")}\nPengendalian: ${x.k||"-"}\nPIC: ${x.pic||"-"}\nBatas waktu: ${x.due||"-"}\n\nMohon konfirmasi dan kirim foto setelah selesai.`;
+const cov=z=>{const ts=[...(D.sess||[]).filter(x=>x.z===z).map(x=>x.t),...D.items.filter(x=>x.z===z).map(x=>x.t),...(D.apd||[]).filter(x=>x.z===z).map(x=>x.d)];if(!ts.length)return 999;return Math.floor((Date.now()-Math.max(...ts.map(t=>+new Date(t))))/864e5);};
+function repx(){const L=D.logs||[],A=D.apd||[];let h="";
+if(L.length)h+=`<h2>Catatan harian</h2><table><tr><th>Tanggal</th><th>Pekerja</th><th>Cuaca</th><th>Toolbox</th><th>Peserta</th><th>Catatan</th></tr>${L.map(x=>`<tr><td>${esc(x.d)}</td><td>${x.w||"-"}</td><td>${esc(x.c)}</td><td>${esc(x.tp||"-")}</td><td>${x.pp||"-"}</td><td>${esc(x.n||"")}</td></tr>`).join("")}</table>`;
+if(A.length)h+=`<h2>Pemantauan kepatuhan APD</h2><table><tr><th>Tanggal</th><th>APD</th><th>Zona</th><th>Diamati</th><th>Patuh</th><th>%</th></tr>${A.map(x=>`<tr><td>${esc(x.d)}</td><td>${esc(x.t)}</td><td>${esc(x.z||"-")}</td><td>${x.o}</td><td>${x.k}</td><td>${Math.round(x.k/x.o*100)}%</td></tr>`).join("")}</table>`;
+return h;}
+function day(){
+const op=D.items.filter(x=>x.st!=="Selesai").sort((a,b)=>sc(b)-sc(a)),sg=[...new Set(op.map(x=>x.h))].slice(0,3);
+const g={};(D.apd||[]).forEach(x=>{g[x.t]=g[x.t]||[0,0];g[x.t][0]+=x.o;g[x.t][1]+=x.k;});
+const ae=Object.entries(g).map(([t,v])=>[`${t} (${v[0]} diamati)`,Math.round(v[1]/v[0]*100)]);
+$("v-day").innerHTML=`<div class="box stack"><h2>Catatan harian</h2><div class="grid"><label>Tanggal<input type="date" id="dt" value="${addDays(0)}"></label><label>Jumlah pekerja<input type="number" id="dw" min="0"></label><label>Cuaca<select id="dc">${so(["Cerah","Berawan","Hujan","Panas terik"],"Cerah")}</select></label></div><label>Topik toolbox meeting<input id="dtp"></label><div class="hint">${sg.length?"Saran topik dari temuan terbuka: "+esc(sg.join("; ")):"Belum ada temuan terbuka untuk dijadikan topik."}</div><label>Peserta toolbox (orang)<input type="number" id="dp" min="0"></label><label>Catatan<textarea id="dn" rows="2"></textarea></label><button class="pri" id="dsv">Simpan catatan harian</button></div>
+<div class="box stack"><h2>Pemantauan kepatuhan APD</h2><div class="hint">Amati sekelompok pekerja: berapa orang yang diamati dan berapa yang memakai APD dengan benar.</div><div class="grid"><label>Jenis APD<select id="ap">${so(APDL,APDL[0])}</select></label><label>Zona<select id="az">${zopt("")}</select></label><label>Diamati (orang)<input type="number" id="ao" min="1"></label><label>Patuh (orang)<input type="number" id="ak" min="0"></label></div><button id="asv">Simpan pengamatan</button><h3>Kepatuhan kumulatif (%)</h3>${bars(ae,"#2e9e5b")}</div>
+<div class="box"><h2>Cakupan inspeksi per zona</h2>${zl().map(z=>{const d=cov(z);return `<p style="margin:0 0 8px"><b>${esc(z)}</b>: <span class="${d>7?"late":""}">${d===999?"belum pernah diinspeksi":d===0?"diinspeksi hari ini":d+" hari lalu"}</span></p>`;}).join("")}<div class="hint">Zona yang lebih dari 7 hari tidak diinspeksi ditandai merah.</div></div>
+<div class="box"><h2>Riwayat catatan harian</h2>${(D.logs||[]).slice(-5).reverse().map(x=>`<p style="margin:0 0 8px"><b>${esc(x.d)}</b> · ${x.w||"-"} pekerja · ${esc(x.c)}${x.tp?" · toolbox: "+esc(x.tp)+" ("+(x.pp||"-")+" peserta)":""}</p>`).join("")||"<div class='hint'>Belum ada catatan.</div>"}</div>`;
+$("dsv").onclick=()=>{(D.logs=D.logs||[]).push({id:Date.now(),d:$("dt").value,w:+$("dw").value||0,c:$("dc").value,tp:$("dtp").value.trim(),pp:+$("dp").value||0,n:$("dn").value.trim()});save();toast("Catatan harian disimpan.");day();render();};
+$("asv").onclick=()=>{const o=+$("ao").value,k=+$("ak").value;if(!(o>0)||k<0||k>o){toast("Isi jumlah diamati, dan jumlah patuh tidak boleh melebihi yang diamati.");return;}(D.apd=D.apd||[]).push({id:Date.now(),d:addDays(0),t:$("ap").value,z:$("az").value,o,k});save();toast("Pengamatan APD disimpan.");day();render();};}
+let syncing=false;
+const SU=()=>(D.p.su||"").trim(),pend=()=>D.items.filter(x=>!x.sy||x.u>x.sy).length+(D.dq||[]).length,sst=m=>{$("sst").textContent=m;};
+const post=async b=>(await fetch(SU(),{method:"POST",body:JSON.stringify(b)})).json();
+async function sync(){
+if(!SU()||!D.p.sk){sst("Sinkronisasi belum disetel. Data hanya tersimpan di perangkat ini.");return;}
+if(syncing)return;
+if(!navigator.onLine){sst(`Offline: ${pend()} data menunggu dikirim.`);return;}
+syncing=true;sst("Menyinkronkan...");
+try{
+D.items.forEach(x=>{if(!x.u)x.u=Date.now();});
+if((D.dq||[]).length){const r=await post({kode:D.p.sk,items:[],del:D.dq});if(!r.ok)throw new Error(r.err);D.dq=[];}
+const pd=D.items.filter(x=>!x.sy||x.u>x.sy);
+for(let i=0;i<pd.length;i+=3){
+const r=await post({kode:D.p.sk,items:pd.slice(i,i+3)});if(!r.ok)throw new Error(r.err);
+r.res.forEach(a=>{const x=D.items.find(y=>String(y.id)===String(a.id));if(x){x.phu=a.phu||x.phu;x.pau=a.pau||x.pau;if(x.ph&&a.phu)x.ph="";if(x.pa&&a.pau)x.pa="";x.sy=a.u;}});}
+const g=await(await fetch(SU()+"?kode="+encodeURIComponent(D.p.sk))).json();if(!g.ok)throw new Error(g.err);
+const ids=new Set(g.items.map(r=>String(r.id)));
+g.items.forEach(r=>{const x=D.items.find(y=>String(y.id)===String(r.id));
+if(x&&!(+r.u>(x.u||0)))return;
+const n={id:+r.id,u:+r.u,sy:+r.u,by:r.by,job:r.job,h:r.h,c:r.c,k:r.k,loc:r.loc,z:r.z,l:+r.l,s:+r.s,lr:+r.lr||0,sr:+r.sr||0,jt:r.jt,py:r.py,pic:r.pic,due:r.due,st:r.st,gps:r.gps,t:r.t,phu:r.phu,pau:r.pau,ph:x?x.ph:"",pa:x?x.pa:"",auto:false};
+if(x)Object.assign(x,n);else D.items.push(n);});
+D.items=D.items.filter(x=>!x.sy||ids.has(String(x.id)));
+save();render();sst(`Tersinkron ${new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})} · ${D.items.length} temuan dari semua inspektur.`);
+}catch(e){sst(e&&e.message==="kode"?"Kode proyek salah.":`Gagal sinkron. Periksa alamat, kode, dan internet. ${pend()} data menunggu.`);}
+finally{syncing=false;}}
+function rep(){
+const it=D.items.slice().sort((a,b)=>sc(b)-sc(a)),p=D.p,op=it.filter(x=>x.st!=="Selesai");
+return `<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Laporan Inspeksi K3</title><style>body{font-family:Arial,sans-serif;margin:28px;color:#14213d}h1{border-bottom:6px solid #ffc800}.f{border:1px solid #999;padding:10px;margin:12px 0;break-inside:avoid}figure{display:inline-block;margin:6px 8px 0 0}img{max-width:260px;display:block}figcaption{font-size:12px}td,th{border:1px solid #999;padding:6px;font-size:13px}table{border-collapse:collapse}</style></head><body><h1>Laporan Inspeksi K3</h1><p>Proyek: <b>${esc(p.n||"-")}</b><br>Lokasi: ${esc(p.l||"-")}<br>Inspektur: ${esc(p.i||"-")}<br>Tanggal cetak: ${new Date().toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"})}</p><p>Total temuan: <b>${it.length}</b> | Terbuka: <b>${op.length}</b> | Terlambat: <b>${it.filter(late).length}</b> | Tinggi/Ekstrem terbuka: <b>${op.filter(x=>cat(sc(x))>=2).length}</b></p><h2>Kesimpulan dan Saran</h2>${$("nar").innerHTML}${repx()}`+it.map((x,n)=>{const c=CATS[cat(sc(x))];return `<div class="f"><h3>${n+1}. ${esc(x.h)} <span style="${bg(c)};padding:2px 8px">${c.n} (${x.l}×${x.s}=${sc(x)})</span></h3><p>Pekerjaan: ${esc(x.job)}<br>Zona: ${esc(x.z||"-")} | Jenis: ${esc(x.jt||"-")} | Penyebab: ${esc(x.py||"-")}<br>Lokasi: ${esc(x.loc||"-")}${x.gps?` (<a href="https://www.google.com/maps?q=${x.gps.a},${x.gps.o}">${x.gps.a}, ${x.gps.o}</a>)`:""}<br>Waktu temuan: ${new Date(x.t).toLocaleString("id-ID")} | Inspektur: ${esc(x.by||"-")}<br>Pengendalian: ${esc(x.k||"-")}<br>PIC: ${esc(x.pic||"-")} | Batas: ${x.due||"-"} | Status: <b>${x.st}</b></p>${x.ph||x.phu?`<figure><img src="${x.ph||x.phu}"><figcaption>Sebelum</figcaption></figure>`:""}${x.pa||x.pau?`<figure><img src="${x.pa||x.pau}"><figcaption>Sesudah</figcaption></figure>`:""}</div>`;}).join("")+`<h3>Pengesahan</h3><table><tr><th>Inspektur</th><th>Mengetahui</th></tr><tr><td style="height:80px;width:200px"></td><td style="width:200px"></td></tr></table></body></html>`;}
+function csv(){const q=v=>`"${String(v==null?"":v).replace(/"/g,'""')}"`;
+return "\ufeff"+[["No","Waktu","Pekerjaan","Temuan","Lokasi","GPS","L","S","Skor","Kategori","Pengendalian","Penanggung jawab","Batas waktu","Status"].map(q).join(",")].concat(D.items.map((x,i)=>[i+1,new Date(x.t).toLocaleString("id-ID"),x.job,x.h,x.loc,x.gps?x.gps.a+", "+x.gps.o:"",x.l,x.s,sc(x),CATS[cat(sc(x))].n,x.k,x.pic,x.due,x.st].map(q).join(","))).join("\n");}
+function wa(){const op=D.items.filter(x=>x.st!=="Selesai").sort((a,b)=>sc(b)-sc(a));
+const t=`*Laporan Inspeksi K3*\n${D.p.n||"-"} | ${D.p.l||"-"}\nInspektur: ${D.p.i||"-"}\nTanggal: ${new Date().toLocaleDateString("id-ID")}\n\nTemuan: ${D.items.length} (terbuka ${op.length}, terlambat ${D.items.filter(late).length})\n\n*Prioritas:*\n`+op.slice(0,5).map((x,i)=>`${i+1}. ${x.h} - ${CATS[cat(sc(x))].n} (${sc(x)}) - ${x.loc||"-"} - PIC ${x.pic||"-"} - batas ${x.due||"-"}`).join("\n");
+if(navigator.share)navigator.share({text:t}).catch(()=>{});else window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank");}
+
+try{const d=JSON.parse(localStorage.getItem("sp2"));if(d&&d.items)D=d;}catch(e){}
+$("pn").value=D.p.n;$("pl").value=D.p.l;$("pi").value=D.p.i;$("pz").value=D.p.z||"";$("pu").value=D.p.su||"";$("pk").value=D.p.sk||"";
+[["pn","n"],["pl","l"],["pi","i"],["pz","z"],["pu","su"],["pk","sk"]].forEach(a=>$(a[0]).oninput=()=>{D.p[a[1]]=$(a[0]).value;save();$("ps").textContent=D.p.n||"belum diisi";});
+$("add").onclick=()=>openForm();
+$("bm").onclick=ovMap;
+$("sb").onclick=()=>{toast("Menyinkronkan...");sync();};
+window.addEventListener("online",()=>sync());setInterval(()=>{if(!document.hidden)sync();},60000);sync();
+const fl=()=>{const on=localStorage.getItem("spf")==="1";document.body.classList.toggle("fld",on);$("mf").textContent="Mode lapangan: "+(on?"aktif":"mati");};
+$("mf").onclick=()=>{try{localStorage.setItem("spf",localStorage.getItem("spf")==="1"?"0":"1");}catch(e){}fl();};fl();
+$("bl").onclick=()=>{const l=D.items.filter(late);if(!l.length){toast("Tidak ada temuan terlambat.");return;}shr(`*Pengingat temuan K3 terlambat*\n${D.p.n||"-"}\n\n`+l.map((x,i)=>`${i+1}. ${x.h} - ${x.z||x.loc||"-"} - PIC ${x.pic||"-"} - batas ${x.due}`).join("\n")+"\n\nMohon segera ditindaklanjuti.");};
+document.querySelectorAll("nav [data-t]").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav [data-t]").forEach(x=>x.classList.toggle("on",x===b));["list","chk","day","sum","rep"].forEach(t=>$("v-"+t).hidden=t!==b.dataset.t);render();if(b.dataset.t==="chk")chk();if(b.dataset.t==="day")day();});
+$("bp").onclick=()=>{if(!D.items.length){toast("Belum ada temuan.");return;}const w=window.open("","_blank");if(!w){toast("Izinkan pop-up untuk mencetak.");return;}w.document.write(rep());w.document.close();setTimeout(()=>w.print(),600);};
+$("bw").onclick=()=>D.items.length?wa():toast("Belum ada temuan.");
+$("bc").onclick=()=>D.items.length?dl("temuan-inspeksi.csv",csv(),"text/csv;charset=utf-8"):toast("Belum ada temuan.");
+$("bb").onclick=()=>dl("cadangan-safe-project.json",JSON.stringify(D),"application/json");
+$("br").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.items)throw 0;if(confirm("Ganti semua data saat ini dengan cadangan ini?")){D=d;save();$("pn").value=D.p.n;$("pl").value=D.p.l;$("pi").value=D.p.i;render();toast("Data dipulihkan.");}}catch(x){toast("Berkas cadangan tidak valid.");}};r.readAsText(f);};
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
+render();
+</script>
+</body>
+</html>
